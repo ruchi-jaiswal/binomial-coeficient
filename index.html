@@ -1,0 +1,790 @@
+<div id="meru-app">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Yatra+One&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+#meru-app, #meru-app *, #meru-app *::before, #meru-app *::after{ box-sizing: border-box; }
+
+/* Defensive reset: shields the embed from a Blogger theme's own element-level
+   rules (e.g. "h2{color:...}"). Explicit 'inherit' here outranks the theme's
+   plain-tag rules by specificity, while our own more specific rules below
+   (e.g. ".hero h1", ".section-title") still win over this. */
+#meru-app h1, #meru-app h2, #meru-app h3, #meru-app h4, #meru-app h5, #meru-app h6,
+#meru-app p, #meru-app span, #meru-app div, #meru-app label, #meru-app li, #meru-app a,
+#meru-app button, #meru-app input {
+  color: inherit;
+  font-family: inherit;
+  text-decoration: none;
+  list-style: none;
+}
+
+
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+#meru-app {
+  --ink-deep:   #1B1B3A;   /* deep indigo night — mountain sky */
+  --ink-deep-2: #262A5C;   /* secondary indigo for gradients */
+  --gold:       #C99A2E;   /* turmeric / gold-leaf accent */
+  --gold-light: #E8C767;
+  --brick:      #A23E2C;   /* sindoor / brick-red for highlights */
+  --brick-glow: #E0684A;
+  --parchment:      #EFE6D0; /* page background, warm paper */
+  --parchment-card: #FBF6EA; /* card surfaces, lighter paper */
+  --ink-text:   #2B2418;   /* body text, warm near-black */
+  --muted:      #6B6252;   /* secondary text */
+  --line:       #DCCFAE;   /* hairline borders on paper */
+  --error:      #8C2E2E;
+  --error-bg:   #F6E3DF;
+  --radius:     14px;
+  --shadow-card: 0 6px 24px rgba(43, 36, 24, 0.10);
+  --shadow-soft: 0 2px 10px rgba(43, 36, 24, 0.08);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+#meru-app *, #meru-app *::before, #meru-app *::after { box-sizing: border-box; }
+#meru-app { scroll-behavior: smooth; }
+#meru-app {
+  margin:0;
+  background: var(--parchment);
+  color: var(--ink-text);
+  font-family:'Inter', sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing: antialiased;
+}
+#meru-app h1, #meru-app h2, #meru-app h3 { font-family:'Yatra One', cursive; font-weight:400; margin:0; }
+#meru-app p { margin:0 0 1em 0; }
+#meru-app button { font-family:inherit; cursor:pointer; }
+#meru-app input { font-family:'IBM Plex Mono', monospace; }
+
+#meru-app .container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* respect reduced motion preference */
+@media (prefers-reduced-motion: reduce){
+  #meru-app * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ============================================================
+   HERO — the mountain of Meru
+   ============================================================ */
+#meru-app .hero {
+  position: relative;
+  background: linear-gradient(180deg, var(--ink-deep) 0%, var(--ink-deep-2) 100%);
+  color: var(--parchment-card);
+  overflow: hidden;
+  padding: 72px 24px 120px;
+  text-align:center;
+}
+
+/* decorative mountain range silhouette, built purely from CSS triangles */
+#meru-app .hero-mountains {
+  position:absolute;
+  bottom:0; left:0; right:0;
+  height:90px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:0;
+  pointer-events:none;
+  opacity:0.5;
+}
+#meru-app .hero-mountains span {
+  width:0; height:0;
+  border-left:60px solid transparent;
+  border-right:60px solid transparent;
+  margin:0 -18px;
+}
+#meru-app .hero-mountains span:nth-child(odd) { border-bottom:70px solid var(--ink-deep-2); }
+#meru-app .hero-mountains span:nth-child(even) { border-bottom:50px solid var(--gold); opacity:0.35; }
+
+#meru-app .hero-eyebrow {
+  font-family:'IBM Plex Mono', monospace;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  font-size:0.72rem;
+  color: var(--gold-light);
+  margin-bottom:18px;
+}
+#meru-app .hero-devanagari {
+  font-size: 1.1rem;
+  color: var(--gold-light);
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+#meru-app .hero h1 {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  letter-spacing: 0.01em;
+  color: var(--parchment-card);
+}
+#meru-app .hero .subtitle {
+  font-family:'Inter', sans-serif;
+  font-weight:600;
+  font-size: clamp(1rem, 2.4vw, 1.3rem);
+  color: var(--gold-light);
+  margin-top:10px;
+}
+#meru-app .hero .tagline {
+  max-width: 520px;
+  margin: 22px auto 0;
+  color: rgba(251,246,234,0.75);
+  font-size:0.98rem;
+}
+
+/* ============================================================
+   SECTION SCAFFOLDING
+   ============================================================ */
+#meru-app section { padding: 64px 0; }
+#meru-app .section-title {
+  font-size: clamp(1.6rem, 3.4vw, 2.1rem);
+  margin-bottom: 8px;
+}
+#meru-app .section-kicker {
+  font-family:'IBM Plex Mono', monospace;
+  font-size:0.75rem;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color: var(--brick);
+  margin-bottom:10px;
+  display:block;
+}
+
+#meru-app .card {
+  background: var(--parchment-card);
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 32px;
+}
+
+/* ============================================================
+   INTRO — What is Meru-Prastāra
+   ============================================================ */
+#meru-app .intro-grid {
+  max-width: 720px;
+  margin-top:28px;
+}
+#meru-app .intro-text p { color: var(--ink-text); }
+
+/* ============================================================
+   CALCULATOR
+   ============================================================ */
+#meru-app .calc-card {
+  margin-top:28px;
+}
+#meru-app .calc-fields {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:20px;
+}
+#meru-app .field label {
+  display:block;
+  font-weight:600;
+  font-size:0.85rem;
+  margin-bottom:8px;
+  color: var(--ink-text);
+}
+#meru-app .field .hint {
+  font-size:0.78rem;
+  color: var(--muted);
+  font-family:'Inter', sans-serif;
+  margin-top:6px;
+}
+#meru-app .field input {
+  width:100%;
+  padding:12px 14px;
+  font-size:1.1rem;
+  border:1.5px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+  color: var(--ink-text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+#meru-app .field input:focus {
+  outline:none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(201,154,46,0.18);
+}
+
+#meru-app .calc-actions {
+  display:flex;
+  gap:14px;
+  margin-top:26px;
+  flex-wrap:wrap;
+}
+#meru-app .btn {
+  border:none;
+  border-radius:10px;
+  padding:13px 28px;
+  font-weight:700;
+  font-size:0.95rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+}
+#meru-app .btn:active { transform: translateY(1px) scale(0.98); }
+#meru-app .btn-primary {
+  background: linear-gradient(180deg, var(--brick-glow), var(--brick));
+  color:#fff;
+  box-shadow: 0 4px 14px rgba(162,62,44,0.35);
+}
+#meru-app .btn-primary:hover { box-shadow: 0 6px 18px rgba(162,62,44,0.45); transform: translateY(-1px); }
+#meru-app .btn-secondary {
+  background: transparent;
+  color: var(--ink-text);
+  border:1.5px solid var(--line);
+}
+#meru-app .btn-secondary:hover { border-color: var(--brick); color: var(--brick); }
+
+/* error message */
+#meru-app .error-box {
+  display:none;
+  margin-top:20px;
+  padding:14px 16px;
+  background: var(--error-bg);
+  border:1px solid rgba(140,46,46,0.35);
+  border-radius:10px;
+  color: var(--error);
+  font-size:0.9rem;
+  font-weight:600;
+}
+#meru-app .error-box.show { display:block; animation: shake 0.35s ease; }
+@keyframes shake{
+  0%,100%{ transform: translateX(0); }
+  25%{ transform: translateX(-6px); }
+  75%{ transform: translateX(6px); }
+}
+
+/* ============================================================
+   RESULT
+   ============================================================ */
+#meru-app .result-wrap {
+  display:none;
+  margin-top:28px;
+  animation: fadeUp 0.45s ease;
+}
+#meru-app .result-wrap.show { display:block; }
+@keyframes fadeUp{
+  from{ opacity:0; transform: translateY(14px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+#meru-app .result-headline {
+  display:flex;
+  align-items:baseline;
+  gap:16px;
+  flex-wrap:wrap;
+  border-bottom:1px dashed var(--line);
+  padding-bottom:20px;
+  margin-bottom:20px;
+}
+#meru-app .result-headline .label {
+  font-family:'IBM Plex Mono', monospace;
+  color: var(--muted);
+  font-size:0.95rem;
+}
+#meru-app .result-headline .value {
+  font-family:'IBM Plex Mono', monospace;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight:600;
+  color: var(--brick);
+}
+
+#meru-app .steps {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+#meru-app .step-line {
+  font-family:'IBM Plex Mono', monospace;
+  font-size:0.95rem;
+  background: rgba(27,27,58,0.04);
+  border-left:3px solid var(--gold);
+  padding:10px 14px;
+  border-radius:0 8px 8px 0;
+  overflow-x:auto;
+  white-space: nowrap;
+}
+#meru-app .step-line .tag {
+  color: var(--muted);
+  font-size:0.75rem;
+  display:block;
+  margin-bottom:3px;
+  font-family:'Inter', sans-serif;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+
+/* ============================================================
+   TRIANGLE — Meru staircase
+   ============================================================ */
+#meru-app .triangle-section {
+  background: linear-gradient(180deg, var(--ink-deep) 0%, var(--ink-deep-2) 100%);
+  color: var(--parchment-card);
+}
+#meru-app .triangle-section .section-kicker { color: var(--gold-light); }
+#meru-app .triangle-section .section-title { color: var(--parchment-card); }
+#meru-app .triangle-section p.desc { color: rgba(251,246,234,0.7); max-width:600px; }
+
+#meru-app .triangle-scroll {
+  margin-top:32px;
+  overflow-x:auto;
+  padding-bottom:12px;
+}
+#meru-app .triangle {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  min-width:max-content;
+  padding: 8px 12px 24px;
+}
+#meru-app .trow {
+  display:flex;
+  gap:8px;
+}
+#meru-app .tcell {
+  min-width:44px;
+  height:44px;
+  padding:0 8px;
+  border-radius:8px;
+  background: rgba(251,246,234,0.06);
+  border:1px solid rgba(232,199,103,0.25);
+  color: var(--parchment-card);
+  font-family:'IBM Plex Mono', monospace;
+  font-size:0.82rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+#meru-app .trow-label {
+  font-family:'IBM Plex Mono', monospace;
+  font-size:0.7rem;
+  color: rgba(251,246,234,0.4);
+  min-width:34px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding-right:4px;
+}
+#meru-app .trow-inner { display:flex; gap:8px; align-items:center; }
+
+#meru-app .tcell.highlight {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  border-color: var(--gold-light);
+  color: var(--ink-deep);
+  font-weight:700;
+  box-shadow: 0 0 0 4px rgba(232,199,103,0.25), 0 4px 14px rgba(201,154,46,0.5);
+  animation: pulse 1.4s ease infinite;
+}
+@keyframes pulse{
+  0%,100%{ box-shadow: 0 0 0 4px rgba(232,199,103,0.25), 0 4px 14px rgba(201,154,46,0.5); }
+  50%{ box-shadow: 0 0 0 8px rgba(232,199,103,0.12), 0 4px 18px rgba(201,154,46,0.65); }
+}
+#meru-app .triangle-empty {
+  margin-top:32px;
+  color: rgba(251,246,234,0.5);
+  font-size:0.9rem;
+  text-align:center;
+  font-family:'IBM Plex Mono', monospace;
+}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+#meru-app .about-grid {
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:20px;
+  margin-top:28px;
+}
+#meru-app .about-card {
+  padding:24px;
+}
+#meru-app .about-card h3 {
+  font-size:1.05rem;
+  font-family:'Inter', sans-serif;
+  font-weight:700;
+  margin-bottom:8px;
+  color: var(--brick);
+}
+#meru-app .about-card p { font-size:0.92rem; color: var(--muted); margin:0; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 860px){
+  #meru-app .about-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px){
+  #meru-app .hero { padding:56px 20px 96px; }
+  #meru-app .calc-fields { grid-template-columns:1fr; }
+  #meru-app .about-grid { grid-template-columns: 1fr; }
+  #meru-app .card { padding:22px; }
+  #meru-app .result-headline .value { font-size:1.9rem; }
+}
+
+/* visible keyboard focus for accessibility */
+#meru-app a:focus-visible, #meru-app button:focus-visible, #meru-app input:focus-visible {
+  outline:3px solid var(--gold);
+  outline-offset:2px;
+}
+
+</style>
+
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero">
+  <h1>Meru-Prastāra</h1>
+  <div class="subtitle">Binomial Coefficient Calculator</div>
+  <div class="hero-mountains">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================================================
+       INTRO — What is Meru-Prastāra
+       ============================================================ -->
+  <section class="container">
+    <span class="section-kicker">Origins</span>
+    <h2 class="section-title">What is Meru-Prastāra?</h2>
+
+    <div class="intro-grid">
+      <div class="intro-text">
+        <p><strong>Meru-Prastāra</strong>, Sanskrit for "expansion of the mountain," is a method for tabulating combinations
+        described by the Indian scholar <strong>Pingala</strong> around the 2nd century BCE in his treatise on Sanskrit
+        prosody, the <em>Chandaḥśāstra</em>. Centuries later, the commentator <strong>Halāyudha</strong> (10th century CE)
+        explained the method in full: to build a row, place a 1 at each end, and let every number between them be the
+        sum of the two numbers directly above it. Layered row upon row, the numbers form the shape of a mountain — hence
+        the name.</p>
+        <p>That simple addition rule produces exactly the same array of numbers known in the West as
+        <strong>Pascal's Triangle</strong>, named after Blaise Pascal, who described it in 1653 — nearly two thousand
+        years after Pingala. Row <em>n</em> of the triangle holds the coefficients of the binomial expansion
+        (a + b)<sup>n</sup>, and the entry at position <em>r</em> in that row is precisely the binomial coefficient
+        C(n, r): the number of ways to choose <em>r</em> items from a set of <em>n</em>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CALCULATOR
+       ============================================================ -->
+  <section class="container" id="calculator">
+    <span class="section-kicker">Calculate</span>
+    <h2 class="section-title">Find a binomial coefficient</h2>
+
+    <div class="card calc-card">
+      <div class="calc-fields">
+        <div class="field">
+          <label for="input-n">n — total number of items</label>
+          <input type="number" id="input-n" placeholder="e.g. 5" min="0" step="1" inputmode="numeric">
+          <div class="hint">A non-negative whole number (0–30).</div>
+        </div>
+        <div class="field">
+          <label for="input-r">r — items selected</label>
+          <input type="number" id="input-r" placeholder="e.g. 2" min="0" step="1" inputmode="numeric">
+          <div class="hint">A non-negative whole number, no greater than n.</div>
+        </div>
+      </div>
+
+      <div class="calc-actions">
+        <button class="btn btn-primary" id="btn-calculate">Calculate C(n, r)</button>
+        <button class="btn btn-secondary" id="btn-reset">Reset</button>
+      </div>
+
+      <div class="error-box" id="error-box" role="alert"></div>
+
+      <!-- Result & step-by-step breakdown -->
+      <div class="result-wrap" id="result-wrap">
+        <div class="result-headline">
+          <span class="label" id="result-label">C(n, r) =</span>
+          <span class="value" id="result-value">0</span>
+        </div>
+        <div class="steps" id="result-steps"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TRIANGLE — Meru staircase
+       ============================================================ -->
+  <section class="triangle-section">
+    <div class="container">
+      <span class="section-kicker">Visualise</span>
+      <h2 class="section-title">The Meru staircase</h2>
+      <p class="desc">Every row is built by summing the two numbers above it. Calculate a coefficient above and its
+      exact stone on the staircase lights up below.</p>
+
+      <div class="triangle-scroll">
+        <div class="triangle" id="triangle-container">
+          <!-- rows are generated by JavaScript -->
+        </div>
+        <p class="triangle-empty" id="triangle-empty">Enter a value of n and press Calculate to raise the mountain.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT
+       ============================================================ -->
+  <section class="container" id="about">
+    <span class="section-kicker">About</span>
+    <h2 class="section-title">About this project</h2>
+    <div class="about-grid">
+      <div class="card about-card">
+        <h3>Purpose</h3>
+        <p>A small educational tool that calculates binomial coefficients and shows exactly how the answer is
+        reached — no black boxes, every step is visible.</p>
+      </div>
+      <div class="card about-card">
+        <h3>How it works</h3>
+        <p>The formula C(n, r) = n! ÷ [r! × (n − r)!] is computed step by step, and the same values are cross-checked
+        against Meru-Prastāra's additive staircase.</p>
+      </div>
+      <div class="card about-card">
+        <h3>Runs anywhere</h3>
+        <p>Built with plain HTML, CSS and JavaScript. Everything runs in your browser — no server, database, or
+        account needed.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+
+<script>
+/* ================================================================
+   MERU-PRASTĀRA · BINOMIAL COEFFICIENT CALCULATOR
+   Plain, well-commented JavaScript — no frameworks, no build step.
+   ================================================================ */
+
+// The largest value of n we allow. BigInt keeps the maths exact for
+// any size, but rows beyond this get impractical to render on screen.
+const MAX_N = 30;
+
+// Grab the DOM elements we need once, up front.
+const inputN      = document.getElementById('input-n');
+const inputR      = document.getElementById('input-r');
+const btnCalculate = document.getElementById('btn-calculate');
+const btnReset     = document.getElementById('btn-reset');
+const errorBox     = document.getElementById('error-box');
+const resultWrap   = document.getElementById('result-wrap');
+const resultLabel  = document.getElementById('result-label');
+const resultValue  = document.getElementById('result-value');
+const resultSteps  = document.getElementById('result-steps');
+const triangleContainer = document.getElementById('triangle-container');
+const triangleEmpty     = document.getElementById('triangle-empty');
+
+/**
+ * Calculate n! (factorial) using BigInt so large values stay exact.
+ * @param {number} n
+ * @returns {bigint}
+ */
+function factorial(n) {
+  let result = 1n;
+  for (let i = 2n; i <= BigInt(n); i++) {
+    result *= i;
+  }
+  return result;
+}
+
+/**
+ * Calculate the binomial coefficient C(n, r) directly from factorials.
+ * @param {number} n
+ * @param {number} r
+ * @returns {bigint}
+ */
+function binomialFromFactorials(n, r) {
+  return factorial(n) / (factorial(r) * factorial(n - r));
+}
+
+/**
+ * Build the full Meru-Prastāra (Pascal's Triangle) up to row n using
+ * the traditional additive rule: each inner number is the sum of the
+ * two numbers above it. This mirrors Halāyudha's original method.
+ * @param {number} n
+ * @returns {bigint[][]} array of rows, each row an array of BigInt
+ */
+function buildMeruPrastara(n) {
+  const rows = [];
+  for (let row = 0; row <= n; row++) {
+    const current = [];
+    for (let col = 0; col <= row; col++) {
+      if (col === 0 || col === row) {
+        current.push(1n); // every row starts and ends with 1
+      } else {
+        current.push(rows[row - 1][col - 1] + rows[row - 1][col]);
+      }
+    }
+    rows.push(current);
+  }
+  return rows;
+}
+
+/**
+ * Show an error message and hide any previous result.
+ * @param {string} message
+ */
+function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add('show');
+  resultWrap.classList.remove('show');
+}
+
+/** Hide the error message box. */
+function clearError() {
+  errorBox.classList.remove('show');
+  errorBox.textContent = '';
+}
+
+/**
+ * Validate the raw text from the n / r inputs.
+ * Returns { valid: true, n, r } or { valid: false, message }.
+ */
+function validateInputs(rawN, rawR) {
+  if (rawN.trim() === '' || rawR.trim() === '') {
+    return { valid: false, message: 'Please enter a value for both n and r.' };
+  }
+
+  const n = Number(rawN);
+  const r = Number(rawR);
+
+  // Must be whole numbers (no decimals) and actual numbers at all.
+  if (!Number.isInteger(n) || !Number.isInteger(r)) {
+    return { valid: false, message: 'n and r must be whole numbers (no decimals).' };
+  }
+
+  if (n < 0 || r < 0) {
+    return { valid: false, message: 'n and r must be non-negative (zero or greater).' };
+  }
+
+  if (r > n) {
+    return { valid: false, message: 'r cannot be greater than n — you can\'t select more items than you have.' };
+  }
+
+  if (n > MAX_N) {
+    return { valid: false, message: `For a clear, readable staircase, please keep n at ${MAX_N} or below.` };
+  }
+
+  return { valid: true, n, r };
+}
+
+/**
+ * Render the step-by-step formula breakdown for C(n, r).
+ */
+function renderSteps(n, r) {
+  const nMinusR = n - r;
+  const factN = factorial(n);
+  const factR = factorial(r);
+  const factNR = factorial(nMinusR);
+  const denominator = factR * factNR;
+  const answer = factN / denominator;
+
+  resultSteps.innerHTML = `
+    <div class="step-line"><span class="tag">Formula</span>C(n, r) = n! / [ r! &times; (n − r)! ]</div>
+    <div class="step-line"><span class="tag">Substitute</span>C(${n}, ${r}) = ${n}! / [ ${r}! &times; (${n} − ${r})! ]</div>
+    <div class="step-line"><span class="tag">Factorial values</span>${n}! = ${factN}&nbsp;&nbsp;|&nbsp;&nbsp;${r}! = ${factR}&nbsp;&nbsp;|&nbsp;&nbsp;${nMinusR}! = ${factNR}</div>
+    <div class="step-line"><span class="tag">Divide</span>C(${n}, ${r}) = ${factN} / (${factR} &times; ${factNR}) = ${factN} / ${denominator}</div>
+    <div class="step-line"><span class="tag">Result</span>C(${n}, ${r}) = ${answer}</div>
+  `;
+
+  return answer;
+}
+
+/**
+ * Render the Meru-Prastāra triangle up to row n, highlighting the
+ * cell at (n, r) so the user can see the coefficient in context.
+ */
+function renderTriangle(n, r) {
+  const rows = buildMeruPrastara(n);
+  triangleContainer.innerHTML = '';
+  triangleEmpty.style.display = 'none';
+
+  rows.forEach((rowValues, rowIndex) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'trow';
+
+    const label = document.createElement('div');
+    label.className = 'trow-label';
+    label.textContent = `n=${rowIndex}`;
+    rowEl.appendChild(label);
+
+    const inner = document.createElement('div');
+    inner.className = 'trow-inner';
+
+    rowValues.forEach((value, colIndex) => {
+      const cell = document.createElement('div');
+      cell.className = 'tcell';
+      cell.textContent = value.toString();
+      if (rowIndex === n && colIndex === r) {
+        cell.classList.add('highlight');
+      }
+      inner.appendChild(cell);
+    });
+
+    rowEl.appendChild(inner);
+    triangleContainer.appendChild(rowEl);
+  });
+}
+
+/** Main handler for the Calculate button. */
+function handleCalculate() {
+  clearError();
+
+  const check = validateInputs(inputN.value, inputR.value);
+  if (!check.valid) {
+    showError(check.message);
+    return;
+  }
+
+  const { n, r } = check;
+
+  // Step-by-step factorial breakdown.
+  const answer = renderSteps(n, r);
+  resultLabel.textContent = `C(${n}, ${r}) =`;
+  resultValue.textContent = answer.toString();
+  resultWrap.classList.add('show');
+
+  // Draw the Meru-Prastāra staircase with the answer highlighted.
+  renderTriangle(n, r);
+
+  // Smoothly bring the result into view.
+  resultWrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/** Main handler for the Reset button. */
+function handleReset() {
+  inputN.value = '';
+  inputR.value = '';
+  clearError();
+  resultWrap.classList.remove('show');
+  resultSteps.innerHTML = '';
+  triangleContainer.innerHTML = '';
+  triangleEmpty.style.display = 'block';
+  inputN.focus();
+}
+
+// Wire up events.
+btnCalculate.addEventListener('click', handleCalculate);
+btnReset.addEventListener('click', handleReset);
+
+// Allow pressing Enter inside either input field to trigger calculation.
+[inputN, inputR].forEach((el) => {
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      handleCalculate();
+    }
+  });
+});
+</script>
+
+
+</div>
